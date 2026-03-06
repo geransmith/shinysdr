@@ -27,6 +27,6 @@ SHARED_TEST_OBJECTS_CAP = 'shared_test_objects'
 
 
 class SharedTestObjects(ExportedState):
-    @exported_value(type=unicode, changes='never')
+    @exported_value(type=six.text_type, changes='never')
     def get_smoke_test(self):
         return 'SharedTestObjects exists'

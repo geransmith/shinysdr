@@ -161,14 +161,14 @@ def _put_root_static(wcommon, container_resource):
         container_resource.putChild(name, _make_static_resource(os.path.join(static_resource_path, name_str if name_str != '' else 'index.html')))
     
     # Link deps into /client/.
-    client = container_resource.children['client']
+    client = container_resource.children[b'client']
     for name in ['require.js', 'text.js']:
         client.putChild(name.encode('utf-8'), _make_static_resource(os.path.join(deps_path, name)))
     for name in ['measviz.js', 'measviz.css']:
         client.putChild(name.encode('utf-8'), _make_static_resource(os.path.join(deps_path, 'measviz/src', name)))
     
     # Link deps into /test/.
-    test = container_resource.children['test']
+    test = container_resource.children[b'test']
     jasmine = SlashedResource()
     test.putChild('jasmine', jasmine)
     for name in ['jasmine.css', 'jasmine.js', 'jasmine-html.js']:

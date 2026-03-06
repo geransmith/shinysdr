@@ -34,25 +34,7 @@ from gnuradio.fft import window
 from gnuradio import filter as grfilter  # don't shadow builtin
 from gnuradio.filter import pfb
 from gnuradio.filter import firdes
-try:
-    # Try the direct class imports first (newer GNU Radio)
-    from gnuradio.filter import rational_resampler_ccf, rational_resampler_fff
-    # Create a compatibility object that mimics the old module interface
-    class _RationalResamplerCompat:
-        rational_resampler_ccf = rational_resampler_ccf
-        rational_resampler_fff = rational_resampler_fff
-    rational_resampler = _RationalResamplerCompat()
-except ImportError:
-    try:
-        # Try the old module import (older GNU Radio)
-        from gnuradio.filter import rational_resampler
-    except ImportError:
-        # Last resort: try importing from gnuradio directly
-        from gnuradio import filter as grfilter
-        class _RationalResamplerCompat:
-            rational_resampler_ccf = grfilter.rational_resampler_ccf
-            rational_resampler_fff = grfilter.rational_resampler_fff
-        rational_resampler = _RationalResamplerCompat()
+from gnuradio.filter import rational_resampler
 
 from shinysdr.interfaces import BandShape
 from shinysdr.i.math import factorize, small_factor_at_least

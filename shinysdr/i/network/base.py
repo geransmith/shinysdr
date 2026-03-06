@@ -170,16 +170,26 @@ class SiteWithDefaultHeaders(Site):
         return Site.getResourceFor(self, request)
 
 
-def endpoint_string_to_url(desc, scheme='http', hostname='localhost', path='/', listening_port=None):
+def endpoint_string_to_url(desc, scheme='http', hostname='localhost', 
+        path='/', listening_port=None):
     """Construct a URL from a twisted.internet.endpoints string.
-    
-    If listening_port is supplied then it is used to obtain the actual port number."""
+    If listening_port is supplied then it is used to obtain the actual port 
+    number."""
     (method, args, _) = endpoints._parseServer(desc, None)
     if listening_port:
         # assuming that this is a TCP port object
         port_number = listening_port.getHost().port
     else:
         port_number = args[0]
+
+    # Ensure all variables are strings, not bytes
+    if isinstance(scheme, bytes):
+        scheme = scheme.decode('utf-8')
+    if isinstance(hostname, bytes):
+        hostname = hostname.decode('utf-8')
+    if isinstance(path, bytes):
+        path = path.decode('utf-8')
+
     if method == 'TCP':
         return scheme + '://' + hostname + ':' + str(port_number) + path
     elif method == 'SSL':

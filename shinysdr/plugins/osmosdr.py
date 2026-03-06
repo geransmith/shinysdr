@@ -579,7 +579,7 @@ def _install_gain_cell(self, source_ref, rxd_ref, name):
         label=name)
 
 
-def convert_osmosdr_range(meta_range, transform=lambda f: f, minimum=-1e9, maximum=1e9):
+def convert_osmosdr_range(meta_range, transform=lambda f: f, minimum=-1e9, maximum=1e9, **kwargs):
     subranges = []
 
     # Robust meta_range_t iteration for Python 3

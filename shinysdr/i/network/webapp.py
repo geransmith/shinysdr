@@ -158,8 +158,8 @@ def _put_root_static(wcommon, container_resource):
     
     for name in [b'', b'client', b'test', b'manual', b'tools']:
         name_str = name.decode('utf-8') if isinstance(name, bytes) else name
-        container_resource.putChild(name), _make_static_resource(os.path.join(static_resource_path, name_str if name_str != '' else 'index.html'))
-    
+        container_resource.putChild(name, _make_static_resource(os.path.join(static_resource_path, name_str if name_str != '' else 'index.html')))    
+        
     # Link deps into /client/.
     client = container_resource.children[b'client']
     for name in ['require.js', 'text.js']:

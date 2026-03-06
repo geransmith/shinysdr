@@ -18,12 +18,11 @@
 
 """Test objects used by client-server integration and equivalence tests."""
 
-import six
-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from shinysdr.values import ExportedState, exported_value
 
+import six
 
 SHARED_TEST_OBJECTS_CAP = 'shared_test_objects'
 

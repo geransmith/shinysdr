@@ -579,12 +579,11 @@ def _install_gain_cell(self, source_ref, rxd_ref, name):
         label=name)
 
 
-def convert_osmosdr_range(meta_range, transform=lambda f: f, minimum=-1e9, maximum=1e9, **kwargs):
+def convert_osmosdr_range(meta_range, transform=lambda f: f, minimum=-1e9, maximum=1e9, add_zero=False, **kwargs):
     subranges = []
-
     # Robust meta_range_t iteration for Python 3
     if hasattr(meta_range, "empty") and meta_range.empty():
-        pass  # Empty range, skip iteration
+        pass # Empty range, skip iteration
     else:
         i = 0
         while True:
@@ -595,7 +594,9 @@ def convert_osmosdr_range(meta_range, transform=lambda f: f, minimum=-1e9, maxim
             except (IndexError, RuntimeError, TypeError):
                 break
 
+    if add_zero or not subranges: # don't generate an invalid empty RangeT
+        subranges[0:0] = [(0, 0)]
     if not subranges:
         subranges = [(minimum, maximum)]
 
-    return subranges
+    return RangeT(subranges, **kwargs)  # Return proper ValueType!

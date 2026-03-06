@@ -54,7 +54,7 @@ class SessionResource(SlashedResource):
         self.putChild(b'ephemeris', EphemerisResource())
         
         # Standard audio-file-over-HTTP audio stream (the ShinySDR web client uses WebSockets instead, but both have the same path modulo protocol)
-        self.putChild(AUDIO_STREAM_PATH_ELEMENT, AudioStreamResource(session))
+        self.putChild(AUDIO_STREAM_PATH_ELEMENT.encode('utf-8'), AudioStreamResource(session))
 
 
 class _RadioIndexHtmlElement(EntryPointIndexElement):

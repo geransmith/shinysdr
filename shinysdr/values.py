@@ -910,7 +910,10 @@ class CellDict(object):
             self._shape_subscription()
     
     def __iter__(self):
-        return self.iterkeys()
+        if six.PY2:
+            return self.iterkeys()
+        else:
+            return self.keys()
 
     if six.PY2:
         def iterkeys(self):

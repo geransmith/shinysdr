@@ -21,7 +21,10 @@ GNU Radio blocks which automatically compute appropriate filter designs.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from fractions import gcd
+try:
+    from fractions import gcd
+except ImportError:
+    from math import gcd  # Python 3.9+ moved gcd to math module
 from math import pi, sin, cos
 
 import six
@@ -31,7 +34,11 @@ from gnuradio.fft import window
 from gnuradio import filter as grfilter  # don't shadow builtin
 from gnuradio.filter import pfb
 from gnuradio.filter import firdes
-from gnuradio.filter import rational_resampler
+try:
+    from gnuradio.filter import rational_resampler
+except ImportError:
+    from gnuradio import filter
+    rational_resampler = filter.rational_resampler_ccc
 
 from shinysdr.interfaces import BandShape
 from shinysdr.i.math import factorize, small_factor_at_least

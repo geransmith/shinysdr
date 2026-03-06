@@ -156,28 +156,29 @@ class WebService(Service):
 def _put_root_static(wcommon, container_resource):
     """Place all the simple resources, that are not necessarily sourced from files but at least are unchanging and public."""
     
-    for name in ['', 'client', 'test', 'manual', 'tools']:
-        container_resource.putChild(name, _make_static_resource(os.path.join(static_resource_path, name if name != '' else 'index.html')))
+    for name in [b'', b'client', b'test', b'manual', b'tools']:
+        name_str = name.decode('utf-8') if isinstance(name, bytes) else name
+        container_resource.putChild(name, _make_static_resource(os.path.join(static_resource_path, name_str if name_str != '' else 'index.html')))
     
     # Link deps into /client/.
     client = container_resource.children['client']
     for name in ['require.js', 'text.js']:
-        client.putChild(name, _make_static_resource(os.path.join(deps_path, name)))
+        client.putChild(name.encode('utf-8'), _make_static_resource(os.path.join(deps_path, name)))
     for name in ['measviz.js', 'measviz.css']:
-        client.putChild(name, _make_static_resource(os.path.join(deps_path, 'measviz/src', name)))
+        client.putChild(name.encode('utf-8'), _make_static_resource(os.path.join(deps_path, 'measviz/src', name)))
     
     # Link deps into /test/.
     test = container_resource.children['test']
     jasmine = SlashedResource()
     test.putChild('jasmine', jasmine)
     for name in ['jasmine.css', 'jasmine.js', 'jasmine-html.js']:
-        jasmine.putChild(name, _make_static_resource(os.path.join(
+        jasmine.putChild(name.encode('utf-8'), _make_static_resource(os.path.join(
             deps_path, 'jasmine/lib/jasmine-core/', name)))
     
     # Special resources
-    container_resource.putChild('favicon.ico',
+    container_resource.putChild(b'favicon.ico',
         _make_static_resource(os.path.join(static_resource_path, 'client/icon/icon-32.png')))
-    client.putChild('web-app-manifest.json',
+    client.putChild(b'web-app-manifest.json',
         WebAppManifestResource(wcommon))
     _put_plugin_resources(wcommon, client)
 
@@ -188,10 +189,10 @@ def _put_plugin_resources(wcommon, client_resource):
     load_list_js = []
     mode_table = {}
     plugin_resources = Resource()
-    client_resource.putChild('plugins', plugin_resources)
+    client_resource.putChild(b'plugins', plugin_resources)
     for resource_def in getPlugins(_IClientResourceDef, shinysdr.plugins):
         # Add the plugin's resource to static serving
-        plugin_resources.putChild(resource_def.key, resource_def.resource)
+        plugin_resources.putChild(resource_def.key.encode('utf-8'), resource_def.resource)
         plugin_resource_url = '/client/plugins/' + urllib.parse.quote(resource_def.key, safe='') + '/'
         # Tell the client to load the plugins
         # TODO constrain path values to be relative (not on a different origin, to not leak urls)
@@ -211,7 +212,7 @@ def _put_plugin_resources(wcommon, client_resource):
         'js': load_list_js,
         'modes': mode_table,
     }
-    client_resource.putChild('client-configuration.json', ClientConfigurationResource(wcommon, plugin_index))
+    client_resource.putChild(b'client-configuration.json', ClientConfigurationResource(wcommon, plugin_index))
 
 
 class ClientConfigurationResource(Resource):

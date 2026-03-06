@@ -26,10 +26,12 @@ from gnuradio import blocks
 from gnuradio import channels
 from gnuradio import gr
 try:
-    from gnuradio.filter import rational_resampler
+    from gnuradio.filter import rational_resampler_ccf, rational_resampler_fff
 except ImportError:
-    from gnuradio import filter
-    rational_resampler = filter.rational_resampler_ccc
+    # Fallback for older GNU Radio versions
+    from gnuradio import filter as grfilter
+    rational_resampler_ccf = grfilter.rational_resampler_ccf
+    rational_resampler_fff = grfilter.rational_resampler_fff
 
 
 from shinysdr.devices import Device, IRXDriver
@@ -234,7 +236,7 @@ class _SimulatedTransmitter(gr.hier_block2, ExportedState):
         else:
             raise Exception('don\'t know how to supply input of type %s' % modulator_input_type)
         
-        rf_resampler = rational_resampler.rational_resampler_ccf(
+        rf_resampler = rational_resampler_ccf(
             interpolation=int(rf_rate),
             decimation=int(modulator.get_output_type().get_sample_rate()))
         self.__rotator = blocks.rotator_cc(rotator_inc(rate=rf_rate, shift=freq))

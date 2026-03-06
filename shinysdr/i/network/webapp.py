@@ -25,6 +25,8 @@ import six
 from six.moves import urllib
 from six.moves.urllib.parse import urljoin
 
+import mimetypes
+
 from twisted.application.service import Service
 from twisted.internet import defer
 from twisted.internet import endpoints
@@ -48,6 +50,8 @@ from shinysdr.i.shared_test_objects import SHARED_TEST_OBJECTS_CAP
 from shinysdr.interfaces import _IClientResourceDef
 from shinysdr.twisted_ext import FactoryWithArgs
 from shinysdr.values import SubscriptionContext
+
+mimetypes.add_type('text/plain', '.glsl')
 
 
 def _make_static_resource(pathname):

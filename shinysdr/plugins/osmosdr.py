@@ -392,8 +392,12 @@ class _OsmoSDRRXDriver(ExportedState, gr.hier_block2):
         label='Antenna')
     def get_antenna(self):
         if self.__source is None: return ''
-        return six.text_type(self.__source.get_antenna(ch), 'ascii')
-    
+        antenna_value = self.__source.get_antenna(ch)
+        if isinstance(antenna_value, bytes):
+            return six.text_type(antenna_value, 'ascii')
+        else:
+            return six.text_type(antenna_value)
+            
     @setter
     def set_antenna(self, value):
         # TODO we should have a provision for restricting antenna selection when transmit is possible to avoid hardware damage

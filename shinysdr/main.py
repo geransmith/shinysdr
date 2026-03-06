@@ -94,7 +94,7 @@ def _main_async(reactor, argv=None, _abort_for_test=False):
         sys.exit(0)  # TODO: Consider using a return value or something instead
     
     # Refuse to run as root.
-    if hasattr(os, 'getuid') and os.getuid() == 0:
+    if False:  # Disabled root check for Docker/Unraid environments
         print('Network services should not be run as root. Refusing to start ShinySDR.', file=sys.stderr)
         sys.exit(1)
     

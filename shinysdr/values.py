@@ -285,6 +285,15 @@ class PollingCell(TargetingMixin, ValueCell):
     __explicit_subscriptions = None
     __last_polled_value = None
     __setter = None
+
+    def __getattr__(self, name):
+        if name == 'start':
+            import traceback
+            print("ERROR: Trying to call start() on PollingCell")
+            print("PollingCell object:", self)
+            traceback.print_stack()
+            raise AttributeError(f"'PollingCell' object has no attribute '{name}'")
+        raise AttributeError(f"'PollingCell' object has no attribute '{name}'")
     
     def __init__(self,
             target,

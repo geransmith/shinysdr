@@ -32,7 +32,7 @@ from twisted.web import static
 from zope.interface import Interface, implementer
 
 from gnuradio import gr
-from gnuradio import gru
+import threading
 
 try:
     import air_modes
@@ -109,7 +109,9 @@ class ModeSDemodulator(gr.hier_block2, ExportedState):
             except Exception:
                 print(traceback.format_exc())
         
-        self.__msgq_runner = gru.msgq_runner(hex_msg_queue, msq_runner_callback)
+        self.__msgq_runner = threading.Thread(target=self._msgq_runner_thread, args=(hex_msg_queue, msq_runner_callback))
+        self.__msgq_runner.daemon = True
+        self.__msgq_runner.start()
         
         def parsed_callback(msg):
             timestamp = time.time()
@@ -119,6 +121,16 @@ class ModeSDemodulator(gr.hier_block2, ExportedState):
         for i in six.moves.range(0, 2 ** 5):
             parser_output.subscribe('type%i_dl' % i, parsed_callback)
 
+    def _msgq_runner_thread(self, msg_queue, callback):
+    """Replacement for gru.msgq_runner using standard Python threading"""
+    while True:
+        try:
+            msg = msg_queue.delete_head()
+            if msg:
+                callback(msg)
+        except:
+            break
+    
     def __del__(self):
         self.__msgq_runner.stop()
     

@@ -25,7 +25,25 @@ from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import channels
 from gnuradio import gr
-from gnuradio.filter import rational_resampler
+try:
+    # Try the direct class imports first (newer GNU Radio)
+    from gnuradio.filter import rational_resampler_ccf, rational_resampler_fff
+    # Create a compatibility object that mimics the old module interface
+    class _RationalResamplerCompat:
+        rational_resampler_ccf = rational_resampler_ccf
+        rational_resampler_fff = rational_resampler_fff
+    rational_resampler = _RationalResamplerCompat()
+except ImportError:
+    try:
+        # Try the old module import (older GNU Radio)
+        from gnuradio.filter import rational_resampler
+    except ImportError:
+        # Last resort: try importing from gnuradio directly
+        from gnuradio import filter as grfilter
+        class _RationalResamplerCompat:
+            rational_resampler_ccf = grfilter.rational_resampler_ccf
+            rational_resampler_fff = grfilter.rational_resampler_fff
+        rational_resampler = _RationalResamplerCompat()
 
 
 from shinysdr.devices import Device, IRXDriver

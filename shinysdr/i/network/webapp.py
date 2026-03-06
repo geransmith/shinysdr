@@ -96,7 +96,7 @@ class WebService(Service):
         
         if UNIQUE_PUBLIC_CAP in cap_table:
             # TODO: consider factoring out "generate URL for cap"
-            server_root.putChild('', Redirect(_make_cap_url(UNIQUE_PUBLIC_CAP)))
+            server_root.putChild(b'', Redirect(_make_cap_url(UNIQUE_PUBLIC_CAP)))
             
         self.__ws_protocol = txws.WebSocketFactory(
             FactoryWithArgs.forProtocol(WebSocketDispatcherProtocol, cap_table, subscription_context))

@@ -473,7 +473,20 @@ def make_resampler(in_rate, out_rate, complex=False):
         common = gcd(in_rate, out_rate)
         interpolation = out_rate // common
         decimation = in_rate // common
-        return (rational_resampler.rational_resampler_ccf if complex else rational_resampler.rational_resampler_fff)(
+        try:
+    from gnuradio.filter import rational_resampler_ccf, rational_resampler_fff
+        return (rational_resampler_ccf if complex else rational_resampler_fff)(
+            interpolation=interpolation,
+            decimation=decimation,
+            taps=firdes.low_pass(
+                interpolation,  # gain compensates for interpolation
+                interpolation,  # rational resampler filter runs at the interpolated rate
+                in_relative_cutoff,
+                in_relative_transition_width))
+    except ImportError:
+        # Fallback for older GNU Radio versions
+        from gnuradio import filter
+        return (filter.rational_resampler_ccf if complex else filter.rational_resampler_fff)(
             interpolation=interpolation,
             decimation=decimation,
             taps=firdes.low_pass(

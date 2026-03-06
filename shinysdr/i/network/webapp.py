@@ -170,7 +170,7 @@ def _put_root_static(wcommon, container_resource):
     # Link deps into /test/.
     test = container_resource.children[b'test']
     jasmine = SlashedResource()
-    test.putChild('jasmine', jasmine)
+    test.putChild(b'jasmine', jasmine)
     for name in ['jasmine.css', 'jasmine.js', 'jasmine-html.js']:
         jasmine.putChild(name.encode('utf-8'), _make_static_resource(os.path.join(
             deps_path, 'jasmine/lib/jasmine-core/', name)))

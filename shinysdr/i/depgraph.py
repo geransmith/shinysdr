@@ -153,7 +153,7 @@ class Plumber(object):
         
         self.__log.debug('CHANGE: ...completed analysis')
         
-        newly_inactive_ffs = (set(self.six.iterkeys(__active_holders))
+        newly_inactive_ffs = (set(six.iterkeys(self.__active_holders))
             .difference(active_ffs)
             .union(self.__do_not_reuse))
         needs_configuration = newly_active_ffs or newly_inactive_ffs

@@ -25,7 +25,12 @@ from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import channels
 from gnuradio import gr
-from gnuradio.filter import rational_resampler
+try:
+    from gnuradio.filter import rational_resampler
+except ImportError:
+    from gnuradio import filter
+    rational_resampler = filter.rational_resampler_ccc
+
 
 from shinysdr.devices import Device, IRXDriver
 from shinysdr.filters import make_resampler

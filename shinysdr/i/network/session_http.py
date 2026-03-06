@@ -41,7 +41,7 @@ class SessionResource(SlashedResource):
         self.putChild(b'', ElementRenderingResource(_RadioIndexHtmlElement(wcommon)))
         
         # Exported radio control objects
-        self.putChild(CAP_OBJECT_PATH_ELEMENT, BlockResource(session, wcommon, _not_deletable))
+        self.putChild(CAP_OBJECT_PATH_ELEMENT.encode('utf-8'), BlockResource(session, wcommon, _not_deletable))
         
         # Frequency DB
         self.putChild(b'dbs', shinysdr.i.db.DatabasesResource(read_only_dbs))

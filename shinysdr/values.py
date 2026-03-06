@@ -911,7 +911,7 @@ class CellDict(object):
     
     def __iter__(self):
         if six.PY2:
-            return self.iterkeys()
+            return six.iterkeys(self)
         else:
             return self.keys()
 

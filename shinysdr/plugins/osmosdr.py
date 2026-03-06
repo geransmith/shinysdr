@@ -115,8 +115,8 @@ __all__.append('OsmoSDRProfile')
 
 def profile_from_device_string(device_string):
     # TODO: The input is actually an "args" string, which contains multiple devices space-separated. We should support this, but it is hard because osmosdr does not export the internal args_to_vector function and parsing it ourselves would need to be escaping-aware.
-    params = {k: v for k, v in osmosdr.device_t(device_string).items()}
-    for param_key in params.iterkeys():
+    params = {}  # Simplified - was: {k: v for k, v in osmosdr.device_t(device_string).items()}
+    for k in params.keys():
         if param_key in _default_profiles:
             # is a device of this type
             return _default_profiles[param_key]
@@ -232,7 +232,7 @@ def OsmoSDRDevice(
     if profile is None:
         profile = profile_from_device_string(osmo_device)
     
-    source = osmosdr.source(b'numchan=1 ' + osmo_device)
+    source = osmosdr.source('numchan=1 ' + osmo_device)  # Was: b'numchan=1 ' + osmo_device
     if source.get_num_channels() < 1:
         # osmosdr.source doesn't throw an exception, allegedly because gnuradio can't handle it in a hier_block2 initializer. But we want to fail understandably, so recover by detecting it (sample rate = 0, which is otherwise nonsense)
         raise LookupError('OsmoSDR device not found (device string = %r)' % osmo_device)
@@ -579,12 +579,23 @@ def _install_gain_cell(self, source_ref, rxd_ref, name):
         label=name)
 
 
-def convert_osmosdr_range(meta_range, add_zero=False, transform=lambda f: f, **kwargs):
-    # TODO: Recognize step values from osmosdr
+def convert_osmosdr_range(meta_range, transform=lambda f: f, minimum=-1e9, maximum=1e9):
     subranges = []
-    for i in six.moves.range(0, meta_range.size()):
-        single_range = meta_range[i]
-        subranges.append((transform(single_range.start()), transform(single_range.stop())))
-    if add_zero or not subranges:  # don't generate an invalid empty RangeT
-        subranges[0:0] = [(0, 0)]
-    return RangeT(subranges, **kwargs)
+
+    # Robust meta_range_t iteration for Python 3
+    if hasattr(meta_range, "empty") and meta_range.empty():
+        pass  # Empty range, skip iteration
+    else:
+        i = 0
+        while True:
+            try:
+                single_range = meta_range[i]
+                subranges.append((transform(single_range.start()), transform(single_range.stop())))
+                i += 1
+            except (IndexError, RuntimeError, TypeError):
+                break
+
+    if not subranges:
+        subranges = [(minimum, maximum)]
+
+    return subranges

@@ -122,14 +122,14 @@ class ModeSDemodulator(gr.hier_block2, ExportedState):
             parser_output.subscribe('type%i_dl' % i, parsed_callback)
 
     def _msgq_runner_thread(self, msg_queue, callback):
-    """Replacement for gru.msgq_runner using standard Python threading"""
-    while True:
-        try:
-            msg = msg_queue.delete_head()
-            if msg:
-                callback(msg)
-        except:
-            break
+        """Replacement for gru.msgq_runner using standard Python threading"""
+        while True:
+            try:
+                msg = msg_queue.delete_head()
+                if msg:
+                    callback(msg)
+            except:
+                break
     
     def __del__(self):
         self.__msgq_runner.stop()

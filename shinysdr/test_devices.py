@@ -121,7 +121,7 @@ class TestMergeDevices(unittest.TestCase):
             Device(components={'b': StubComponent()})
         ])
         self.assertEqual(d, IDevice(d))
-        self.assertEqual(sorted(d.get_components_dict().iterkeys()), ['a', 'b'])
+        self.assertEqual(sorted(six.iterkeys(d.get_components_dict())), ['a', 'b'])
 
     def test_components_conflict(self):
         d = merge_devices([
@@ -129,7 +129,7 @@ class TestMergeDevices(unittest.TestCase):
             Device(components={'a': StubComponent()})
         ])
         self.assertEqual(d, IDevice(d))
-        self.assertEqual(sorted(d.get_components_dict().iterkeys()), ['0-a', '1-a'])
+        self.assertEqual(sorted(six.iterkeys(d.get_components_dict())), ['0-a', '1-a'])
 
     def test_vfos(self):
         d = merge_devices([

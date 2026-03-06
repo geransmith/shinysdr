@@ -20,7 +20,7 @@
 
 import os.path
 import subprocess
-import urllib
+import urllib.request as urllib
 
 from setuptools import find_packages, setup, Command
 from setuptools.command.build_py import build_py
